@@ -45,6 +45,12 @@ yargs.command({
   command: 'start',
   describe: 'start compile and watch html or other files! | 开始编译并监听文件变化！',
   builder: {
+    config : {
+      alias: 'c',
+      describe: 'config file path',
+      demand: false,
+      type: 'string'
+    },
     origin: {
       alias: 'o',
       describe: 'orgin dir',
