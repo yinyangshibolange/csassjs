@@ -1,0 +1,28 @@
+
+$danger-color: #f53367;
+$info-color: #9a9a9a;
+$primary-color: #ca1dac;
+$success-color: #14dc14;
+
+$dialog-zindex: 999;
+$right-width: 21em;
+$right-margin-left: 2em;
+$main-width: calc(100% - #{$right-width + $right-margin-left});
+$box-shadow: 0 0 0.3em rgba(0,0,0,0.3);
+
+$content-width: 1200px;
+$font-size: 16px;
+$breakpoints: (
+  phone: 20em,
+  tablet: 48em,
+  desktop: 64em
+);
+
+@mixin size($width, $height) {
+ width: calc($width / $font-size) * 1em;
+ height: calc($height / $font-size) * 1em;
+}
+
+@function toem($px) {
+  @return calc($px / $font-size) * 1em;
+}

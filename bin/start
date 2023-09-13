@@ -1,0 +1,88 @@
+#!/usr/bin/env node
+
+const yargs = require("yargs")
+const csass = require("../lib/csass.js")
+const logger = require("../lib/logger")
+const path = require("path")
+const fs = require("fs")
+const fs_promises = fs.promises
+const defaultConfig = require("../lib/default.config")
+
+require('yargonaut')
+  .help('3D-ASCII')
+  .helpStyle('green')
+  .style('blue')
+
+yargs.command({
+  command: 'init',
+  describe: 'init your user space',
+  builder: {
+    dir: {
+      alias: 'dir',
+      describe: 'init config file paths',
+      demand: false,
+      type: 'string'
+    }
+  },
+  async handler (argv) {
+    const initTarget = path.resolve(process.cwd(), argv.dir || '', 'csass.config.js')
+    let isFileExist = false
+    try {
+      const stat = await fs_promises.stat(initTarget)
+      if (stat.isFile()) {
+        isFileExist = true
+      }
+    } catch (err) {}
+    if (isFileExist) {
+      logger.info("配置文件csass.config.js已存在，无需再次初始化")
+    } else {
+      logger.info("csass.config.js不存在，将创建初始配置")
+      const readDefaultFile = await fs_promises.readFile(path.resolve(__dirname, "../lib/default.config.js"))
+      await fs_promises.writeFile(initTarget, readDefaultFile.toString())
+    }
+  }
+}).command({
+  command: 'start',
+  describe: 'start compile and watch html or other files! | 开始编译并监听文件变化！',
+  builder: {
+    origin: {
+      alias: 'o',
+      describe: 'orgin dir',
+      demand: false,
+      type: 'string'
+    },
+    target: {
+      alias: 't',
+      describe: 'target dir path',
+      demand: false,
+      type: 'string'
+    },
+   
+  },
+  async handler (argv) {
+    const configFilePath = path.resolve(process.cwd(), argv.config || 'csass.config.js')
+    try {
+      await fs_promises.stat(configFilePath)
+    } catch (err) {
+      logger.error("未找到配置文件，请先配置")
+      return err
+    }
+    const userConfig = require(configFilePath) || {}
+    const config = {
+      ...defaultConfig,
+      ...userConfig,
+    }
+    if (argv.origin) {
+      config.origin = argv.origin
+    }
+    if (argv.target) {
+      config.target = argv.target
+    }
+    logger.success("配置加载成功，开始运行csassjs！")
+    csass(config)
+  }
+})
+  .example('$0 init', 'init csass.config.js，初始化配置文件')
+  .example('$0 start', 'start csass compile use default config (csass.config.js)')
+  .wrap(null)
+  .argv
