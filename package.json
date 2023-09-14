@@ -1,6 +1,6 @@
 {
   "name": "csassjs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "compile sass/scss files to css",
   "bin": {
     "csass": "./bin/start"
