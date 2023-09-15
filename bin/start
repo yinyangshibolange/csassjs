@@ -63,7 +63,13 @@ yargs.command({
       demand: false,
       type: 'string'
     },
-   
+    ,
+    hot: {
+      alias: 'h',
+      describe: 'hot watch | 热更新',
+      demand: false,
+      type: 'string'
+    }
   },
   async handler (argv) {
     const configFilePath = path.resolve(process.cwd(), argv.config || 'csass.config.js')
@@ -83,6 +89,9 @@ yargs.command({
     }
     if (argv.target) {
       config.target = argv.target
+    }
+    if (argv.hot) {
+      config.hot = argv.hot
     }
     logger.success("配置加载成功，开始运行csassjs！")
     csass(config)
