@@ -63,7 +63,6 @@ yargs.command({
       demand: false,
       type: 'string'
     },
-    ,
     hot: {
       alias: 'h',
       describe: 'hot watch | 热更新',
